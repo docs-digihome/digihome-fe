@@ -40,6 +40,10 @@ Prek (`prek.toml`): prettier on `pre-commit`, `tsc --noEmit` on `pre-push`.
 - `src/api/documents/documents.post.query.ts` — `mutationOptions` factories `uploadDocumentsMutationOptions`/`syncDocumentsMutationOptions` (`retry:0`, key `["documents","upload"|"sync"]`); callers `useMutation(opts)` and rely on global `onError` — do not add local `onError` toast (double toast), use per-call `onSuccess` with snapshot for `files` if need stable closure
 - Path alias and `FormData` boundary gotcha are the most common agent mistakes here
 
+## Git
+
+Commits must use **Conventional Commits** (`feat:`, `fix:`, `docs:`, `chore:`, `refactor:`, etc.) and be split **by coverage/scope** — one commit per logical area (e.g., `feat(theme):`, `fix(modal):`, `docs:`), not one monolithic commit. Inspect `git status`/`git diff --stat` to group files by scope before committing.
+
 ## Env
 
 `.env` gitignored; copy `.env.example` (`VITE_API_URL` only). Vite vars must be `VITE_` prefixed.
