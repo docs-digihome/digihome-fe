@@ -26,7 +26,7 @@ const ModalRoot = ({
 }
 
 const ModalTrigger = ({ children }: PropsWithChildren) => {
-  return <DialogTrigger>{children}</DialogTrigger>
+  return <DialogTrigger render={children as React.ReactElement} />
 }
 
 const ModalContent = ({
