@@ -1,6 +1,7 @@
 import { Loader2, Send, Sparkles } from "lucide-react"
 import { ChatBubble } from "@/components/home/ChatBubble"
 import { InsertDocumentModal } from "@/components/home/modal/InsertDocumentModal"
+import { ThemeToggle } from "@/components/theme/theme-toggle"
 import { Button } from "@/components/ui/button"
 import { useHomePage } from "@/hooks/home/useHomePage"
 import { SyncDocumentsButton } from "@/components/home/button/SyncDocumentsButton"
@@ -25,16 +26,19 @@ export const HomePage = () => {
   return (
     <div className="flex h-dvh flex-col bg-background">
       <header className="shrink-0 border-b bg-card/50 backdrop-blur">
-        <div className="mx-auto flex max-w-3xl items-center gap-2 px-4 py-3">
-          <div className="flex size-8 items-center justify-center rounded-lg bg-primary text-primary-foreground">
-            <Sparkles className="size-4" />
+        <div className="mx-auto flex max-w-3xl items-center justify-between gap-2 px-4 py-3">
+          <div className="flex items-center gap-2">
+            <div className="flex size-8 items-center justify-center rounded-lg bg-primary text-primary-foreground">
+              <Sparkles className="size-4" />
+            </div>
+            <div>
+              <h1 className="text-sm font-semibold leading-none">DigiHome</h1>
+              <p className="text-xs text-muted-foreground">
+                Smart-home assistant
+              </p>
+            </div>
           </div>
-          <div>
-            <h1 className="text-sm font-semibold leading-none">DigiHome</h1>
-            <p className="text-xs text-muted-foreground">
-              Smart-home assistant
-            </p>
-          </div>
+          <ThemeToggle />
         </div>
       </header>
 
@@ -98,7 +102,7 @@ export const HomePage = () => {
 
       <div className="shrink-0 border-t bg-background">
         <div className="mx-auto max-w-3xl px-4 py-4">
-          <div className="flex items-end gap-2 rounded-2xl border bg-card p-2 shadow-sm focus-within:ring-2 focus-within:ring-ring/20">
+          <div className="flex items-center gap-2 rounded-2xl border bg-card p-2 shadow-sm focus-within:ring-2 focus-within:ring-ring/20">
             <textarea
               value={input}
               onChange={(e) => setInput(e.target.value)}
