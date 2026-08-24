@@ -1,32 +1,68 @@
-# React + TypeScript + Vite
+# DigiHome FE
 
-This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
+Chat frontend for DigiHome — smart-home assistant. Single-thread chat with history, PDF upload (RAG), and document sync.
 
-Currently, two official plugins are available:
+## Stack
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+React 19 + TypeScript + Vite, Tailwind v4, shadcn/base-nova, TanStack Query, React Router, redaxios.
 
-## React Compiler
+## Features
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+- Chat — `useInfiniteQuery` history (`GET /chat?before=`), `POST /chat {prompt}` with optimistic update, infinite scroll (IntersectionObserver)
+- Documents — PDF dropzone (max 10, preview), `POST /rag/document`, `POST /rag/seed` sync
+- Theme — light / dark / system, persisted, applied via `html.dark` (dropdown in header)
 
-## Expanding the Oxlint configuration
+## Get Started
 
-If you are developing a production application, we recommend enabling type-aware lint rules by installing `oxlint-tsgolint` and editing `.oxlintrc.json`:
-
-```json
-{
-  "$schema": "./node_modules/oxlint/configuration_schema.json",
-  "plugins": ["react", "typescript", "oxc"],
-  "options": {
-    "typeAware": true
-  },
-  "rules": {
-    "react/rules-of-hooks": "error",
-    "react/only-export-components": ["warn", { "allowConstantExport": true }]
-  }
-}
+```bash
+cp .env.example .env   # set VITE_API_URL (default http://localhost:8080)
+bun install            # respects bunfig.toml minimumReleaseAge=3d
+bun dev                # http://localhost:5173
 ```
 
-See the [Oxlint rules documentation](https://oxc.rs/docs/guide/usage/linter/rules) for the full list of rules and categories.
+### Tooling setup (one-time)
+
+```bash
+# Git hooks — prettier on pre-commit, tsc --noEmit on pre-push (see prek.toml)
+bunx prek install              # install hooks
+bunx prek run --all-files      # run all hooks manually
+
+# shadcn — add UI components (alias @/* → src/* is pre-configured)
+bunx shadcn@latest add button dialog sonner  # etc.
+
+# Alternatives if you don't use prek
+bunx prettier --write .        # format (semi: false)
+bunx tsc --noEmit              # typecheck
+bun run lint                   # oxlint
+```
+
+## Scripts
+
+| Command                     | Description                      |
+| --------------------------- | -------------------------------- |
+| `bun dev`                   | dev server                       |
+| `bun run build`             | `tsc -b && vite build`           |
+| `bun run lint`              | oxlint (config `.oxlintrc.json`) |
+| `bunx tsc --noEmit`         | typecheck                        |
+| `bunx prettier --write .`   | format (no semicolons)           |
+| `bunx prek run --all-files` | all hooks (prettier + tsc)       |
+
+## Env
+
+Only `VITE_API_URL` required (Vite needs `VITE_` prefix). See `.env.example`.
+
+## Project Structure
+
+```
+src/main.tsx → app/providers.tsx → routes/router.tsx
+pages/home.tsx, hooks/home/useHomePage.ts
+components/home/{ChatBubble, dropzone/DocumentDropzone, modal/InsertDocumentModal, button/SyncDocumentsButton}
+components/theme/{theme-provider, theme-toggle}
+components/ui/* (shadcn), lib/*, api/*, schemas/*
+```
+
+## Notes
+
+- Alias `@/*` → `src/*`
+- `FormData` uploads must not set `Content-Type` manually (let browser set boundary)
+- Tailwind theme in `src/index.css`, dark mode via `@custom-variant dark (&:is(.dark *))`
