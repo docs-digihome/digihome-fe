@@ -1,10 +1,11 @@
-import { Loader2, Send, Sparkles } from "lucide-react"
+import { Files, Loader2, Send, Sparkles } from "lucide-react"
+import { Link } from "react-router"
 import { ChatBubble } from "@/components/home/ChatBubble"
+import { SyncDocumentsButton } from "@/components/home/button/SyncDocumentsButton"
 import { InsertDocumentModal } from "@/components/home/modal/InsertDocumentModal"
 import { ThemeToggle } from "@/components/theme/theme-toggle"
 import { Button } from "@/components/ui/button"
 import { useHomePage } from "@/hooks/home/useHomePage"
-import { SyncDocumentsButton } from "@/components/home/button/SyncDocumentsButton"
 
 export const HomePage = () => {
   const {
@@ -38,7 +39,16 @@ export const HomePage = () => {
               </p>
             </div>
           </div>
-          <ThemeToggle />
+          <div className="flex items-center gap-2">
+            <Link
+              to="/files"
+              className="inline-flex h-7 items-center gap-1 rounded-[min(var(--radius-md),12px)] px-2.5 text-[0.8rem] font-medium hover:bg-muted hover:text-foreground"
+            >
+              <Files className="size-3.5" />
+              Files
+            </Link>
+            <ThemeToggle />
+          </div>
         </div>
       </header>
 
