@@ -9,3 +9,9 @@ export const DocumentsUploadResponseSchema = z.object({
 export type DocumentsUploadResponse = z.infer<
   typeof DocumentsUploadResponseSchema
 >
+
+export const SeededDocumentsSchema = z.object({
+  document_name: z.array(z.string().min(1)),
+})
+
+export type SeededDocuments = z.infer<typeof SeededDocumentsSchema>
