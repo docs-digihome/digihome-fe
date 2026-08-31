@@ -24,6 +24,8 @@ function createPreviewFile(file: File): PdfPreviewFile {
   return Object.assign(file, { preview, id }) as PdfPreviewFile
 }
 
+const MAX_TOTAL_BYTES = 64 * 1024 * 1024
+
 function truncateMiddle(name: string, maxLen = 32): string {
   if (name.length <= maxLen) return name
   const dot = name.lastIndexOf(".")
@@ -49,7 +51,9 @@ export function DocumentDropzone({
   maxFiles = 10,
   disabled = false,
 }: DocumentDropzoneProps) {
+  const totalBytes = files.reduce((acc, f) => acc + f.size, 0)
   const isFull = files.length >= maxFiles
+  const isSizeFull = totalBytes >= MAX_TOTAL_BYTES
 
   const openPreview = useCallback((file: PdfPreviewFile) => {
     window.open(file.preview, "_blank", "noopener,noreferrer")
@@ -80,17 +84,56 @@ export function DocumentDropzone({
         return
       }
 
-      const toAdd = acceptedFiles.slice(0, remaining)
+      if (totalBytes >= MAX_TOTAL_BYTES) {
+        toast.error(
+          `Total size limit reached (${formatBytes(MAX_TOTAL_BYTES)}). Remove a file before adding more.`,
+        )
+        return
+      }
+
+      const cappedByCount = acceptedFiles.slice(0, remaining)
       if (acceptedFiles.length > remaining) {
         toast.error(
           `Only ${remaining} more file(s) allowed — ${acceptedFiles.length - remaining} file(s) ignored (max ${maxFiles})`,
         )
       }
 
+      const toAdd: File[] = []
+      const rejectedBySize: File[] = []
+      let runningTotal = totalBytes
+      for (const file of cappedByCount) {
+        if (runningTotal + file.size > MAX_TOTAL_BYTES) {
+          rejectedBySize.push(file)
+          continue
+        }
+        toAdd.push(file)
+        runningTotal += file.size
+      }
+
+      if (rejectedBySize.length > 0) {
+        if (toAdd.length === 0) {
+          const first = rejectedBySize[0]
+          toast.error(
+            `${first.name} (${formatBytes(first.size)}) would exceed total limit of ${formatBytes(MAX_TOTAL_BYTES)} — current total ${formatBytes(totalBytes)}`,
+          )
+          if (rejectedBySize.length > 1) {
+            toast.error(
+              `${rejectedBySize.length - 1} more file(s) also exceed the ${formatBytes(MAX_TOTAL_BYTES)} total limit and were skipped`,
+            )
+          }
+        } else {
+          toast.error(
+            `${rejectedBySize.length} file(s) skipped — total size would exceed ${formatBytes(MAX_TOTAL_BYTES)} (${formatBytes(totalBytes)} already selected)`,
+          )
+        }
+      }
+
+      if (toAdd.length === 0) return
+
       const mapped = toAdd.map(createPreviewFile)
       onFilesChange([...files, ...mapped])
     },
-    [files, maxFiles, onFilesChange],
+    [files, maxFiles, onFilesChange, totalBytes],
   )
 
   const {
@@ -104,7 +147,7 @@ export function DocumentDropzone({
     onDrop,
     accept: { "application/pdf": [".pdf"] },
     multiple: true,
-    disabled: disabled || isFull,
+    disabled: disabled || isFull || isSizeFull,
     noClick: false,
     noKeyboard: false,
   })
@@ -150,9 +193,9 @@ export function DocumentDropzone({
             !isDragAccept &&
             !isDragReject &&
             "border-primary/50 bg-primary/5",
-          isFull && "opacity-60 pointer-events-none",
+          (isFull || isSizeFull) && "opacity-60 pointer-events-none",
         )}
-        aria-disabled={disabled || isFull}
+        aria-disabled={disabled || isFull || isSizeFull}
       >
         <input {...getInputProps()} aria-label="Upload PDFs" />
         <div className="flex size-10 items-center justify-center rounded-full bg-muted">
@@ -171,14 +214,21 @@ export function DocumentDropzone({
             type="button"
             onClick={open}
             className="font-medium text-primary underline-offset-4 hover:underline"
-            disabled={disabled || isFull}
+            disabled={disabled || isFull || isSizeFull}
           >
             click to browse
           </button>
         </p>
         <p className="mt-2 text-xs text-muted-foreground">
           PDF only · max {maxFiles} files · {files.length}/{maxFiles} selected
+          {" · "}
+          {formatBytes(totalBytes)} / {formatBytes(MAX_TOTAL_BYTES)}
         </p>
+        {isSizeFull && (
+          <p className="mt-1 text-xs font-medium text-destructive">
+            Total size limit reached — remove a file to add more
+          </p>
+        )}
       </div>
 
       {/* File list */}
@@ -186,7 +236,8 @@ export function DocumentDropzone({
         <div className="flex flex-col gap-3">
           <div className="flex items-center justify-between">
             <p className="text-xs font-medium text-muted-foreground">
-              {files.length} file{files.length > 1 ? "s" : ""} selected
+              {files.length} file{files.length > 1 ? "s" : ""} selected ·{" "}
+              {formatBytes(totalBytes)} / {formatBytes(MAX_TOTAL_BYTES)}
             </p>
             <Button
               variant="ghost"
