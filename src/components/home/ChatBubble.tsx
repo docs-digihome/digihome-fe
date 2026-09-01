@@ -44,12 +44,13 @@ export const ChatBubble = ({
             <div className="mt-1.5 flex flex-wrap gap-1.5">
               {message.documents.filter(Boolean).map((doc) => (
                 <NavLink
-                  key={doc}
-                  to="#"
+                  key={`${doc.document_name}-${doc.link}`}
+                  to={doc.link}
+                  target="_blank"
                   className="inline-flex items-center gap-1 rounded-full border bg-muted px-2.5 py-1 text-xs hover:bg-muted/80 hover:text-foreground"
                 >
                   <FileText className="size-3" />
-                  {doc}
+                  {doc.document_name}
                 </NavLink>
               ))}
             </div>
@@ -67,3 +68,5 @@ export const ChatBubble = ({
     </div>
   )
 }
+
+// base url/assets/document_name
