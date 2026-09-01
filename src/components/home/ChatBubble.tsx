@@ -26,6 +26,10 @@ export const ChatBubble = ({
 
   if (!message) return null
   const isUser = message.role === "user"
+  const assetURL =
+    import.meta.env.VITE_ASSETS_BASE_URL ??
+    import.meta.env.VITE_ASSETS_BASED_URL ??
+    "http://localhost:9000"
 
   return (
     <div className={cn("flex", isUser ? "justify-end" : "justify-start")}>
@@ -45,7 +49,7 @@ export const ChatBubble = ({
               {message.documents.filter(Boolean).map((doc) => (
                 <NavLink
                   key={`${doc.document_name}-${doc.link}`}
-                  to={doc.link}
+                  to={`${assetURL}/${doc.link}`}
                   target="_blank"
                   className="inline-flex items-center gap-1 rounded-full border bg-muted px-2.5 py-1 text-xs hover:bg-muted/80 hover:text-foreground"
                 >

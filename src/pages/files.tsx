@@ -33,6 +33,11 @@ export const FilesPage = () => {
     return docs.filter((doc) => doc.document_name.toLowerCase().includes(q))
   }, [docs, search])
 
+  const assetURL =
+    import.meta.env.VITE_ASSETS_BASE_URL ??
+    import.meta.env.VITE_ASSETS_BASED_URL ??
+    "http://localhost:9000"
+
   return (
     <div className="flex h-dvh flex-col bg-background">
       <header className="shrink-0 border-b bg-card/50 backdrop-blur">
@@ -155,7 +160,7 @@ export const FilesPage = () => {
                   </span>
                   {doc.link ? (
                     <NavLink
-                      to={doc.link}
+                      to={`${assetURL}/${doc.link}`}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="min-w-0 flex-1 break-all font-medium hover:underline"
