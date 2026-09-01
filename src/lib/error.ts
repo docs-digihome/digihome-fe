@@ -1,6 +1,7 @@
 import { ZodError } from "zod"
 
 export function getErrorMessage(error: unknown): string {
+  console.error(error)
   if (error instanceof ZodError) {
     const messages = error.issues.map((issue) => issue.message)
     return messages.length > 0 ? messages.join(", ") : "Invalid data"
