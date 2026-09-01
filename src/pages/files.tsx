@@ -9,7 +9,7 @@ import {
   Sparkles,
 } from "lucide-react"
 import { useMemo, useState } from "react"
-import { Link } from "react-router"
+import { Link, NavLink } from "react-router"
 import { seededDocumentsQueryOptions } from "@/api/documents/documents.get.query"
 import { ThemeToggle } from "@/components/theme/theme-toggle"
 import { Button, buttonVariants } from "@/components/ui/button"
@@ -21,12 +21,17 @@ export const FilesPage = () => {
     seededDocumentsQueryOptions(),
   )
 
+  const docs = useMemo(() => {
+    const raw = data ?? []
+    // backend currently returns 6 empty placeholders (document_name="") — hide them
+    return raw.filter((d) => d.document_name.trim() !== "")
+  }, [data])
+
   const filtered = useMemo(() => {
-    if (!data) return []
     const q = search.trim().toLowerCase()
-    if (!q) return data.document_name
-    return data.document_name.filter((name) => name.toLowerCase().includes(q))
-  }, [data, search])
+    if (!q) return docs
+    return docs.filter((doc) => doc.document_name.toLowerCase().includes(q))
+  }, [docs, search])
 
   return (
     <div className="flex h-dvh flex-col bg-background">
@@ -68,7 +73,7 @@ export const FilesPage = () => {
                 <p className="text-xs text-muted-foreground">
                   {isPending
                     ? "Loading..."
-                    : `${filtered.length} of ${data?.document_name.length ?? 0} documents`}
+                    : `${filtered.length} of ${docs.length} documents`}
                 </p>
               </div>
             </div>
@@ -111,31 +116,27 @@ export const FilesPage = () => {
             </div>
           )}
 
-          {!isPending &&
-            !isError &&
-            data &&
-            data.document_name.length === 0 && (
-              <div className="py-16 text-center">
-                <div className="mx-auto flex size-12 items-center justify-center rounded-2xl bg-muted">
-                  <Files className="size-6 text-muted-foreground" />
-                </div>
-                <h3 className="mt-4 font-semibold">No documents seeded yet</h3>
-                <p className="mx-auto mt-1 max-w-sm text-sm text-muted-foreground">
-                  Upload PDFs and sync them to see the seeded list here.
-                </p>
-                <Link
-                  to="/"
-                  className={cn(buttonVariants({ size: "sm" }), "mt-4")}
-                >
-                  Go to chat
-                </Link>
+          {!isPending && !isError && docs.length === 0 && (
+            <div className="py-16 text-center">
+              <div className="mx-auto flex size-12 items-center justify-center rounded-2xl bg-muted">
+                <Files className="size-6 text-muted-foreground" />
               </div>
-            )}
+              <h3 className="mt-4 font-semibold">No documents seeded yet</h3>
+              <p className="mx-auto mt-1 max-w-sm text-sm text-muted-foreground">
+                Upload PDFs and sync them to see the seeded list here.
+              </p>
+              <Link
+                to="/"
+                className={cn(buttonVariants({ size: "sm" }), "mt-4")}
+              >
+                Go to chat
+              </Link>
+            </div>
+          )}
 
           {!isPending &&
             !isError &&
-            data &&
-            data.document_name.length > 0 &&
+            docs.length > 0 &&
             filtered.length === 0 && (
               <div className="rounded-lg border border-dashed p-8 text-center text-sm text-muted-foreground">
                 No documents match &quot;{search.trim()}&quot;
@@ -144,17 +145,28 @@ export const FilesPage = () => {
 
           {!isPending && !isError && filtered.length > 0 && (
             <ul className="divide-y rounded-xl border bg-card">
-              {filtered.map((name) => (
+              {filtered.map((doc) => (
                 <li
-                  key={name}
+                  key={`${doc.document_name}-${doc.link}`}
                   className="flex items-center gap-3 px-4 py-3 text-sm"
                 >
                   <span className="flex size-8 shrink-0 items-center justify-center rounded-lg bg-muted">
                     <FileText className="size-4 text-muted-foreground" />
                   </span>
-                  <span className="min-w-0 flex-1 break-all font-medium">
-                    {name}
-                  </span>
+                  {doc.link ? (
+                    <NavLink
+                      to={doc.link}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="min-w-0 flex-1 break-all font-medium hover:underline"
+                    >
+                      {doc.document_name}
+                    </NavLink>
+                  ) : (
+                    <span className="min-w-0 flex-1 break-all font-medium">
+                      {doc.document_name}
+                    </span>
+                  )}
                 </li>
               ))}
             </ul>
