@@ -15,7 +15,7 @@ React 19 + TypeScript + Vite, Tailwind v4, shadcn/base-nova, TanStack Query, Rea
 ## Get Started
 
 ```bash
-cp .env.example .env   # set VITE_BASE_URL (default http://localhost:8080)
+cp .env.example .env   # set VITE_BASE_URL / VITE_API_BASE_URL (default http://localhost:8080) and VITE_ASSETS_BASE_URL (default http://localhost:9000)
 bun install            # respects bunfig.toml minimumReleaseAge=3d
 bun dev                # http://localhost:5173
 ```
@@ -49,7 +49,7 @@ bun run lint                   # oxlint
 
 ## Env
 
-Only `VITE_BASE_URL` required (Vite needs `VITE_` prefix). See `.env.example`.
+`VITE_API_BASE_URL` (API, default `http://localhost:8080`, fallback `VITE_BASE_URL`) and `VITE_ASSETS_BASE_URL` (RustFS, default `http://localhost:9000`) — see `.env.example` (also supports typo `VITE_ASSETS_BASED_URL`).
 
 ## Project Structure
 

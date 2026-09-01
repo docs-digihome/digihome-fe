@@ -34,7 +34,8 @@ Prek (`prek.toml`): prettier on `pre-commit`, `tsc --noEmit` on `pre-push`.
 
 ## API
 
-- `src/api/client.ts` — `redaxios` `apiClient` (`VITE_BASE_URL` || `http://localhost:8080`), **no default `Content-Type`** — `redaxios` auto-sets `application/json` for plain objects; do **not** set `Content-Type` manually for `FormData` or Go's `ParseMultipartForm` fails with `no multipart boundary param`
+- `src/api/client.ts` — `redaxios` `apiClient` (`VITE_API_BASE_URL` → fallback `VITE_BASE_URL` → `http://localhost:8080` via `src/lib/env.ts` `API_BASE_URL`), **no default `Content-Type`** — `redaxios` auto-sets `application/json` for plain objects; do **not** set `Content-Type` manually for `FormData` or Go's `ParseMultipartForm` fails with `no multipart boundary param`
+- `src/lib/env.ts` — `API_BASE_URL` (`VITE_API_BASE_URL` / `VITE_BASE_URL` / default), `ASSETS_BASE_URL` (`VITE_ASSETS_BASE_URL` / `VITE_ASSETS_BASED_URL` typo / default `http://localhost:9000`), `getAssetUrl(name,link)`
 - `src/api/chat/` — `getChatHistory` `GET /chat?before=`, `sendChat` `POST /chat {prompt}`; `src/api/documents/documents.post.api.ts` — `uploadDocuments(files: File[])` `POST /rag/document` field `files` repeated (`FormData`), `syncDocuments(): Promise<string>` `POST /rag/seed` returns `outer.message` via `outerSchema` (`src/schemas/envelope.ts:11`)
 - `src/schemas/` — zod + inferred types (`chat.ts`, `document.ts`, `envelope.ts: outerSchema`/`createEnvelopeSchema`). Enveloped Go `pkg.Response` `{message,data,error}` unwrapped via `src/lib/envelope.ts:unwrapEnvelope` (throws on `error`)
 - `src/api/documents/documents.post.query.ts` — `mutationOptions` factories `uploadDocumentsMutationOptions`/`syncDocumentsMutationOptions` (`retry:0`, key `["documents","upload"|"sync"]`); callers `useMutation(opts)` and rely on global `onError` — do not add local `onError` toast (double toast), use per-call `onSuccess` with snapshot for `files` if need stable closure
@@ -46,4 +47,4 @@ Commits must use **Conventional Commits** (`feat:`, `fix:`, `docs:`, `chore:`, `
 
 ## Env
 
-`.env` gitignored; copy `.env.example` (`VITE_BASE_URL` only). Vite vars must be `VITE_` prefixed.
+`.env` gitignored; copy `.env.example` (`VITE_BASE_URL`, `VITE_API_BASE_URL`, `VITE_ASSETS_BASE_URL`). Vite vars must be `VITE_` prefixed.
