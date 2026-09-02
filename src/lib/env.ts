@@ -1,4 +1,5 @@
 type RuntimeConfig = {
+  BASE_URL?: string
   API_BASE_URL?: string
   ASSETS_BASE_URL?: string
 }
@@ -23,6 +24,7 @@ const pick = (v: string | undefined): string | undefined => {
 
 export const API_BASE_URL: string =
   pick(runtime?.API_BASE_URL) ??
+  pick(runtime?.BASE_URL) ??
   pick(import.meta.env.VITE_API_BASE_URL) ??
   pick(import.meta.env.VITE_BASE_URL) ??
   "http://localhost:8080"

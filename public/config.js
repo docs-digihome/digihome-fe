@@ -1,4 +1,5 @@
 window.__RUNTIME_CONFIG__ = {
+  BASE_URL: "",
   API_BASE_URL: "",
   ASSETS_BASE_URL: "",
 }
