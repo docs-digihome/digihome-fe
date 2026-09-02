@@ -1,5 +1,6 @@
 import { FileText, Loader2 } from "lucide-react"
 import { NavLink } from "react-router"
+import { ASSETS_BASE_URL } from "@/lib/env"
 import { formatISOTime } from "@/lib/time"
 import { cn } from "@/lib/utils"
 import type { ChatMessage } from "@/schemas/chat"
@@ -26,10 +27,7 @@ export const ChatBubble = ({
 
   if (!message) return null
   const isUser = message.role === "user"
-  const assetURL =
-    import.meta.env.VITE_ASSETS_BASE_URL ??
-    import.meta.env.VITE_ASSETS_BASED_URL ??
-    "http://localhost:9000"
+  const assetURL = ASSETS_BASE_URL
 
   return (
     <div className={cn("flex", isUser ? "justify-end" : "justify-start")}>

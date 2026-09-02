@@ -13,6 +13,7 @@ import { Link, NavLink } from "react-router"
 import { seededDocumentsQueryOptions } from "@/api/documents/documents.get.query"
 import { ThemeToggle } from "@/components/theme/theme-toggle"
 import { Button, buttonVariants } from "@/components/ui/button"
+import { ASSETS_BASE_URL } from "@/lib/env"
 import { cn } from "@/lib/utils"
 
 export const FilesPage = () => {
@@ -33,10 +34,7 @@ export const FilesPage = () => {
     return docs.filter((doc) => doc.document_name.toLowerCase().includes(q))
   }, [docs, search])
 
-  const assetURL =
-    import.meta.env.VITE_ASSETS_BASE_URL ??
-    import.meta.env.VITE_ASSETS_BASED_URL ??
-    "http://localhost:9000"
+  const assetURL = ASSETS_BASE_URL
 
   return (
     <div className="flex h-dvh flex-col bg-background">

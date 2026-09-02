@@ -1,10 +1,6 @@
 import axios from "redaxios"
-
-const API_URL =
-  import.meta.env.VITE_API_BASE_URL ??
-  import.meta.env.VITE_BASE_URL ??
-  "http://localhost:8080"
+import { API_BASE_URL } from "@/lib/env"
 
 export const apiClient = axios.create({
-  baseURL: API_URL,
+  baseURL: API_BASE_URL,
 })
