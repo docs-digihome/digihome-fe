@@ -6,17 +6,17 @@ React 19 + TypeScript + Vite SPA (digihome-fe). Package manager is **bun** (`bun
 
 - `bun dev` — dev server
 - `bun run build` — `tsc -b && vite build` (type errors fail build)
-- `bun run lint` — **oxlint** (not eslint, config `.oxlintrc.json`)
-- `bunx prettier --write <files>` — formatter (`semi: false`)
+- `bun run lint` / `bun run lint:fix` — **oxlint** (`--fix` on pre-commit, config `.oxlintrc.json`)
+- `bun run format` / `bun run format:check` — **oxfmt** (`bunx oxfmt --write/--check`, config `.oxfmtrc.json`)
 - `bunx tsc --noEmit` — typecheck (also pre-push hook)
 - `bunx prek run --all-files` — run all hooks; install with `bunx prek install`
 - No test framework configured
 
-Prek (`prek.toml`): prettier on `pre-commit`, `tsc --noEmit` on `pre-push`.
+Prek (`prek.toml`): `oxlint --fix` + `oxfmt --write` on `pre-commit`, `tsc --noEmit` on `pre-push`.
 
 ## Conventions
 
-- **No semicolons** (`prettierrc` `semi: false`). `verbatimModuleSyntax` on — use `import type` for types
+- **No semicolons** (`.oxfmtrc.json` `semi: false`). `verbatimModuleSyntax` on — use `import type` for types
 - Strict `tsconfig.app.json`: `noUnusedLocals`, `noUnusedParameters`, `erasableSyntaxOnly`
 - Path alias `@/*` → `./src/*` (vite + tsconfig)
 - Tailwind v4 via `@tailwindcss/vite` — no `tailwind.config`; theme in `src/index.css` (`@custom-variant dark`, `@plugin "@tailwindcss/typography"`, `base-nova` shadcn style). Add components with `bunx shadcn@latest add <name>` (aliases in `components.json`)

@@ -23,7 +23,7 @@ bun dev                # http://localhost:5173
 ### Tooling setup (one-time)
 
 ```bash
-# Git hooks — prettier on pre-commit, tsc --noEmit on pre-push (see prek.toml)
+# Git hooks — oxlint --fix + oxfmt --write on pre-commit, tsc --noEmit on pre-push (see prek.toml)
 bunx prek install              # install hooks
 bunx prek run --all-files      # run all hooks manually
 
@@ -31,9 +31,9 @@ bunx prek run --all-files      # run all hooks manually
 bunx shadcn@latest add button dialog sonner  # etc.
 
 # Alternatives if you don't use prek
-bunx prettier --write .        # format (semi: false)
+bun run lint:fix               # oxlint --fix
+bun run format                 # oxfmt --write (semi: false, config .oxfmtrc.json)
 bunx tsc --noEmit              # typecheck
-bun run lint                   # oxlint
 ```
 
 ## Scripts
@@ -43,9 +43,11 @@ bun run lint                   # oxlint
 | `bun dev`                   | dev server                       |
 | `bun run build`             | `tsc -b && vite build`           |
 | `bun run lint`              | oxlint (config `.oxlintrc.json`) |
+| `bun run lint:fix`          | oxlint --fix                     |
+| `bun run format`            | oxfmt --write (`.oxfmtrc.json`)  |
+| `bun run format:check`      | oxfmt --check                    |
 | `bunx tsc --noEmit`         | typecheck                        |
-| `bunx prettier --write .`   | format (no semicolons)           |
-| `bunx prek run --all-files` | all hooks (prettier + tsc)       |
+| `bunx prek run --all-files` | all hooks (oxlint + oxfmt + tsc) |
 
 ## Env
 
