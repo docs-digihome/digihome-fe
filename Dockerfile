@@ -1,5 +1,5 @@
 ARG BUN_VERSION=1.2-alpine
-ARG NGINX_VERSION=stable-alpine
+ARG NGINX_VERSION=1.28.0-alpine-slim
 
 FROM oven/bun:${BUN_VERSION} AS builder
 WORKDIR /app
