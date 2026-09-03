@@ -3,4 +3,29 @@
 minimumReleaseAge = 259200 # seconds
 
 # Exclude trusted packages from the age gate
-minimumReleaseAgeExcludes = ["typescript", "@types/node", "vite"]
+minimumReleaseAgeExcludes = [
+  "typescript",
+  "@types/node",
+  "vite",
+  "oxlint",
+  "oxfmt",
+  "@oxfmt/binding-darwin-arm64",
+  "@oxfmt/binding-android-arm64",
+  "@oxfmt/binding-win32-arm64-msvc",
+  "@oxfmt/binding-linux-arm64-gnu",
+  "@oxfmt/binding-linux-arm64-musl",
+  "@oxfmt/binding-openharmony-arm64",
+  "@oxfmt/binding-android-arm-eabi",
+  "@oxfmt/binding-linux-arm-gnueabihf",
+  "@oxfmt/binding-linux-arm-musleabihf",
+  "@oxfmt/binding-win32-ia32-msvc",
+  "@oxfmt/binding-linux-ppc64-gnu",
+  "@oxfmt/binding-linux-riscv64-gnu",
+  "@oxfmt/binding-linux-riscv64-musl",
+  "@oxfmt/binding-linux-s390x-gnu",
+  "@oxfmt/binding-darwin-x64",
+  "@oxfmt/binding-win32-x64-msvc",
+  "@oxfmt/binding-freebsd-x64",
+  "@oxfmt/binding-linux-x64-gnu",
+  "@oxfmt/binding-linux-x64-musl",
+]
